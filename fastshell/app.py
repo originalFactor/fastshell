@@ -12,24 +12,31 @@ from .parser import CommandParser
 from .completer import FastShellCompleter
 from .command import Command
 from .exceptions import FastShellException, CommandNotFound, InvalidArguments
+from .validation import ValidationConfig, set_validation_config
 
 
 class FastShell:
     """Main FastShell application class."""
     
-    def __init__(self, name: str = "fastshell", description: str = ""):
+    def __init__(self, name: str = "fastshell", description: str = "", use_pydantic: bool = True):
         """Initialize FastShell application.
         
         Args:
             name: Application name
             description: Application description
+            use_pydantic: Whether to use Pydantic for type validation
         """
         self.name = name
         self.description = description
+        self.use_pydantic = use_pydantic
         self.commands: Dict[str, Command] = {}
         self.console = Console()
         self.parser = CommandParser()
         self.session: Optional[PromptSession] = None
+        
+        # Configure global validation
+        validation_config = ValidationConfig(use_pydantic=use_pydantic)
+        set_validation_config(validation_config)
         
     def command(self, name: Optional[str] = None, **kwargs):
         """Decorator to register a command.
@@ -40,7 +47,7 @@ class FastShell:
         """
         def decorator(func: Callable) -> Callable:
             cmd_name = name or func.__name__
-            command = Command.from_function(func, cmd_name, **kwargs)
+            command = Command.from_function(func, cmd_name, use_pydantic=self.use_pydantic, **kwargs)
             self.commands[cmd_name] = command
             return func
         return decorator

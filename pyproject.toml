@@ -1,17 +1,18 @@
 [project]
 name = "fastshell"
-version = "0.1.0"
+version = "0.1.1"
 description = "A FastAPI-like framework for building interactive shell applications with auto-completion and type safety"
 authors = [
     {name = "originalFactor",email = "2438926613@qq.com"}
 ]
 license = {text = "GPLv3"}
-readme = "README.md"
+readme = "docs/README.md"
 requires-python = ">=3.8"
 dependencies = [
     "prompt-toolkit (>=3.0.0,<4.0.0)",
     "rich (>=13.0.0,<15.0.0)",
-    "typing-extensions (>=4.0.0,<5.0.0)"
+    "typing-extensions (>=4.0.0,<5.0.0)",
+    "pydantic (>=2.0.0,<3.0.0)"
 ]
 license-files = ["LICEN[CS]E*"]
 
@@ -30,6 +31,15 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/originalfactor/fastshell"
 Issues = "https://github.com/originalfactor/fastshell/issues"
+
+[project.scripts]
+fastshell-test = "run_tests:main"
+
+[tool.setuptools.packages.find]
+where = ["fastshell"]
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "*.txt", "*.yml", "*.yaml"]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

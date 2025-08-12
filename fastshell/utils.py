@@ -1,6 +1,7 @@
 """Utility functions for FastShell."""
 
 import re
+import types
 from typing import Any, Type, Dict, Union
 
 from .exceptions import TypeConversionError
@@ -93,8 +94,24 @@ def convert_value(value: str, target_type: Type) -> Any:
             return int(value)
         elif target_type == float:
             return float(value)
-        elif hasattr(target_type, '__origin__'):
+        elif hasattr(target_type, '__origin__') or isinstance(target_type, types.UnionType):
             # Handle generic types like List[str], Optional[int], etc.
+            if isinstance(target_type, types.UnionType):
+                # Handle new-style Union types (Python 3.10+)
+                args = target_type.__args__
+                if len(args) == 2 and type(None) in args:
+                    # This is Optional[T] (T | None)
+                    non_none_type = args[0] if args[1] == type(None) else args[1]
+                    return convert_value(value, non_none_type)
+                else:
+                    # Try each type in the union
+                    for arg_type in args:
+                        try:
+                            return convert_value(value, arg_type)
+                        except (ValueError, TypeConversionError):
+                            continue
+                    raise ValueError(f"Cannot convert '{value}' to any type in {target_type}")
+            
             origin = target_type.__origin__
             
             if origin == Union:
@@ -163,7 +180,16 @@ def format_type_name(type_obj: Type) -> str:
     Returns:
         Formatted type name
     """
-    if hasattr(type_obj, '__name__'):
+    if isinstance(type_obj, types.UnionType):
+        # Handle new-style Union types (Python 3.10+)
+        args = type_obj.__args__
+        if len(args) == 2 and type(None) in args:
+            non_none_type = args[0] if args[1] == type(None) else args[1]
+            return f"Optional[{format_type_name(non_none_type)}]"
+        else:
+            arg_names = [format_type_name(arg) for arg in args]
+            return f"Union[{', '.join(arg_names)}]"
+    elif hasattr(type_obj, '__name__'):
         return type_obj.__name__
     elif hasattr(type_obj, '__origin__'):
         origin = type_obj.__origin__

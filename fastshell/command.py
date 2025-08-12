@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from .types import Parameter, ParameterType
 from .exceptions import InvalidArguments
 from .utils import parse_docstring, convert_value
+from .validation import validate_and_convert, ValidationConfig
 
 
 @dataclass
@@ -17,6 +18,7 @@ class Command:
     func: Callable
     description: Optional[str] = None
     parameters: List[Parameter] = None
+    use_pydantic: bool = True  # Enable Pydantic validation by default
     
     def __post_init__(self):
         if self.parameters is None:
@@ -122,13 +124,19 @@ class Command:
                 provided_as_kwargs.add(key)
                 if key in option_params:
                     param = option_params[key]
-                    converted_value = convert_value(value, param.type)
+                    if self.use_pydantic:
+                        converted_value = validate_and_convert(value, param.type, param.name)
+                    else:
+                        converted_value = convert_value(value, param.type)
                     converted_kwargs[key] = converted_value
                 else:
                     # Check if it's an argument parameter provided as keyword
                     arg_param = next((p for p in arg_params if p.name == key), None)
                     if arg_param:
-                        converted_value = convert_value(value, arg_param.type)
+                        if self.use_pydantic:
+                            converted_value = validate_and_convert(value, arg_param.type, arg_param.name)
+                        else:
+                            converted_value = convert_value(value, arg_param.type)
                         converted_kwargs[key] = converted_value
                     else:
                         # Unknown option
@@ -142,7 +150,10 @@ class Command:
                 for i, arg in enumerate(args):
                     if i < len(available_arg_params):
                         param = available_arg_params[i]
-                        converted_value = convert_value(arg, param.type)
+                        if self.use_pydantic:
+                            converted_value = validate_and_convert(arg, param.type, param.name)
+                        else:
+                            converted_value = convert_value(arg, param.type)
                         converted_kwargs[param.name] = converted_value
                     else:
                         # Extra positional arguments - this shouldn't happen in well-formed commands
@@ -152,7 +163,10 @@ class Command:
                 for i, arg in enumerate(args):
                     if i < len(arg_params):
                         param = arg_params[i]
-                        converted_value = convert_value(arg, param.type)
+                        if self.use_pydantic:
+                            converted_value = validate_and_convert(arg, param.type, param.name)
+                        else:
+                            converted_value = convert_value(arg, param.type)
                         converted_args.append(converted_value)
                     else:
                         # Extra positional arguments
