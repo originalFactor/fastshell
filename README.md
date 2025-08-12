@@ -48,6 +48,7 @@ fastshell/
 - 🆕 **现代Union语法** - 完全支持Python 3.10+ `int | str`语法
 - 🛡️ **Pydantic验证** - 增强的类型验证和错误处理
 - 🔧 **自动补全** - 命令和参数的智能补全
+- 📊 **自动格式化** - 智能识别数据类型，自动选择最佳显示格式
 - 🌳 **子命令支持** - 嵌套命令结构
 - 🖥️ **跨平台** - 支持Windows、macOS和Linux
 
@@ -55,15 +56,63 @@ fastshell/
 
 - [详细文档](docs/README.md) - 完整的使用指南
 - [Pydantic集成](docs/PYDANTIC_INTEGRATION.md) - 类型验证增强功能
+- [输出格式化指南](docs/FORMATTING.md) - 自动格式化功能详解
 - [使用指南](docs/USAGE.md) - 实用技巧和最佳实践
 - [变更日志](docs/CHANGELOG.md) - 版本更新记录
 
 ## 🎯 示例
 
+### 基础示例
+
+```bash
+# 运行基础功能演示
+python examples/demo.py
+
+# 运行 Pydantic 功能演示
+python examples/demo_pydantic.py --demo
+
+# 运行格式化输出演示
+python examples/demo_formatter.py --demo
+
+# 查看更多示例
+python examples/example.py
+```
+
+### 格式化输出示例
+
+```python
+from fastshell import FastShell
+
+app = FastShell(output_format="auto")
+
+@app.command()
+def get_users():
+    return [
+        {"id": 1, "name": "Alice", "age": 25},
+        {"id": 2, "name": "Bob", "age": 30}
+    ]
+
+# 自动以表格格式显示
+app.run_interactive()
+```
+
+在交互模式中：
+```bash
+my-app> get_users
+# 自动显示为表格格式
+
+my-app> format json
+# 切换到 JSON 格式
+
+my-app> get_users
+# 现在以 JSON 格式显示
+```
+
 查看 `examples/` 目录中的示例代码：
 
 - `demo.py` - 基础功能演示
 - `demo_pydantic.py` - Pydantic增强功能演示
+- `demo_formatter.py` - 格式化输出演示
 - `example.py` - 更多实用示例
 
 ## 🧪 测试

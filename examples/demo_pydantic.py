@@ -27,10 +27,14 @@ def modern_union(value: int | str, optional: str | None = None):
         value: 可以是整数或字符串
         optional: 可选的字符串参数
     """
-    print(f"✅ 新式语法: {value} (类型: {type(value).__name__})")
-    if optional:
-        print(f"   可选参数: {optional}")
-    return value
+    result = {
+        "input_value": value,
+        "input_type": type(value).__name__,
+        "syntax": "modern (Python 3.10+)",
+        "optional_param": optional,
+        "validation_success": True
+    }
+    return result
 
 @app.command()
 def traditional_union(value: Union[int, str], optional: Optional[str] = None):
@@ -40,10 +44,14 @@ def traditional_union(value: Union[int, str], optional: Optional[str] = None):
         value: 可以是整数或字符串
         optional: 可选的字符串参数
     """
-    print(f"✅ 传统语法: {value} (类型: {type(value).__name__})")
-    if optional:
-        print(f"   可选参数: {optional}")
-    return value
+    result = {
+        "input_value": value,
+        "input_type": type(value).__name__,
+        "syntax": "traditional (typing.Union)",
+        "optional_param": optional,
+        "validation_success": True
+    }
+    return result
 
 @app.command()
 def type_conversion(number: int, text: str, flag: bool, decimal: float):
@@ -55,11 +63,19 @@ def type_conversion(number: int, text: str, flag: bool, decimal: float):
         flag: 布尔值
         decimal: 浮点数
     """
-    print(f"🔄 类型转换演示:")
-    print(f"   整数: {number} ({type(number).__name__})")
-    print(f"   字符串: '{text}' ({type(text).__name__})")
-    print(f"   布尔值: {flag} ({type(flag).__name__})")
-    print(f"   浮点数: {decimal} ({type(decimal).__name__})")
+    return {
+        "conversion_results": {
+            "integer": {"value": number, "type": type(number).__name__, "original_input": str(number)},
+            "string": {"value": text, "type": type(text).__name__, "length": len(text)},
+            "boolean": {"value": flag, "type": type(flag).__name__, "truthiness": bool(flag)},
+            "float": {"value": decimal, "type": type(decimal).__name__, "rounded": round(decimal, 2)}
+        },
+        "summary": {
+            "total_params": 4,
+            "all_converted": True,
+            "validation_method": "Pydantic"
+        }
+    }
 
 @app.command()
 def flexible_input(data: int | str | float, mode: str = "auto"):
@@ -167,7 +183,7 @@ def demo_commands():
             print(f"❌ 错误: {e}\n")
     
     # 错误处理演示
-    print("🚨 错误处理演示:\n")
+    print("[ERROR] 错误处理演示:\n")
     error_commands = [
         "error_demo invalid_number",  # 应该失败
         "error_demo 42",             # 应该成功

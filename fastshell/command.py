@@ -109,6 +109,13 @@ class Command:
         Raises:
             InvalidArguments: If arguments are invalid
         """
+        # Check for help request
+        if 'help' in kwargs or 'h' in kwargs:
+            from rich.console import Console
+            console = Console()
+            console.print(self.get_help())
+            return
+            
         try:
             # Convert arguments to proper types
             converted_args = []
@@ -200,6 +207,8 @@ class Command:
         Returns:
             Formatted help text
         """
+        from .utils import format_type_name
+        
         lines = []
         
         # Command name and description
@@ -224,14 +233,42 @@ class Command:
         # Parameters
         if self.parameters:
             lines.append("\nParameters:")
+            
+            # Calculate max width for alignment
+            max_name_width = max(len(param.name) for param in self.parameters)
+            type_names = [format_type_name(param.type) for param in self.parameters]
+            max_type_width = max(len(name) for name in type_names) if type_names else 0
+            
             for param in self.parameters:
-                param_line = f"  {param.name}"
-                if param.type != str:
-                    param_line += f" ({param.type.__name__})"
+                # Format parameter name with proper alignment
+                name_part = f"  {param.name:<{max_name_width}}"
+                
+                # Format type with proper alignment and styling
+                type_name = format_type_name(param.type)
+                type_part = f"({type_name:<{max_type_width}})"
+                
+                # Build the parameter line
+                param_line = f"{name_part} {type_part}"
+                
+                # Add description if available
                 if param.description:
                     param_line += f" - {param.description}"
+                
+                # Add default value and requirement info
+                info_parts = []
+                if not param.required:
+                    info_parts.append("optional")
                 if param.default is not None:
-                    param_line += f" (default: {param.default})"
+                    if isinstance(param.default, str):
+                        # Truncate very long default values for display
+                        default_str = param.default if len(param.default) <= 20 else f"{param.default[:20]}..."
+                        info_parts.append(f"default: '{default_str}'")
+                    else:
+                        info_parts.append(f"default: {param.default}")
+                
+                if info_parts:
+                    param_line += f" [{', '.join(info_parts)}]"
+                
                 lines.append(param_line)
         
         return "\n".join(lines)

@@ -180,6 +180,8 @@ def format_type_name(type_obj: Type) -> str:
     Returns:
         Formatted type name
     """
+    from typing import Union
+    
     if isinstance(type_obj, types.UnionType):
         # Handle new-style Union types (Python 3.10+)
         args = type_obj.__args__
@@ -189,26 +191,30 @@ def format_type_name(type_obj: Type) -> str:
         else:
             arg_names = [format_type_name(arg) for arg in args]
             return f"Union[{', '.join(arg_names)}]"
-    elif hasattr(type_obj, '__name__'):
-        return type_obj.__name__
     elif hasattr(type_obj, '__origin__'):
+        # Check for generic types first (before checking __name__)
         origin = type_obj.__origin__
-        if origin == Union:
-            args = type_obj.__args__
+        if origin is Union:
+            args = getattr(type_obj, '__args__', ())
             if len(args) == 2 and type(None) in args:
                 non_none_type = args[0] if args[1] == type(None) else args[1]
                 return f"Optional[{format_type_name(non_none_type)}]"
-            else:
+            elif args:
                 arg_names = [format_type_name(arg) for arg in args]
                 return f"Union[{', '.join(arg_names)}]"
+            else:
+                return "Union"
         elif origin in (list, List):
-            if type_obj.__args__:
-                item_type = format_type_name(type_obj.__args__[0])
+            args = getattr(type_obj, '__args__', ())
+            if args:
+                item_type = format_type_name(args[0])
                 return f"List[{item_type}]"
             else:
                 return "List"
         else:
             return str(type_obj)
+    elif hasattr(type_obj, '__name__'):
+        return type_obj.__name__
     else:
         return str(type_obj)
 

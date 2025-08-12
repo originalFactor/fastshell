@@ -80,7 +80,7 @@ def flexible_input(value: Union[int, float, str], convert_to: str = "auto"):
         result = value
         target_type = original_type
     
-    print(f"🔄 输入: {value} ({original_type}) → 输出: {result} ({target_type})")
+    print(f"[CONVERT] 输入: {value} ({original_type}) → 输出: {result} ({target_type})")
     return result
 
 @app_pydantic.command()
@@ -171,7 +171,7 @@ def run_validation_tests():
 
 def run_error_handling_tests():
     """测试错误处理"""
-    print("\n🚨 错误处理测试...\n")
+    print("\n[ERROR] 错误处理测试...\n")
     
     error_test_cases = [
         ("flexible_input", ["abc", "--convert_to", "int"], "字符串转整数失败"),
@@ -207,7 +207,7 @@ def compare_validation_systems():
     test_values = ["123", "hello", "45.67"]
     
     for value in test_values:
-        print(f"📋 测试值: {value}")
+        print(f"[TEST] 测试值: {value}")
         
         try:
             print("   传统系统:")
