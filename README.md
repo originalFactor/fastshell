@@ -46,7 +46,7 @@ if __name__ == "__main__":
 ## Installation
 
 ```bash
-pip install fastshell-framework
+pip install fastshell
 ```
 
 ## Development Installation
@@ -54,7 +54,7 @@ pip install fastshell-framework
 For development, clone the repository and install in editable mode:
 
 ```bash
-git clone https://github.com/fastshell/fastshell.git
+git clone https://github.com/originalFactor/fastshell.git
 cd fastshell
 pip install -e .
 ```
@@ -64,7 +64,3 @@ pip install -e .
 ```bash
 pip install -e ".[dev]"
 ```
-
-## License
-
-MIT License
