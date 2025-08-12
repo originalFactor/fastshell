@@ -1,0 +1,36 @@
+[project]
+name = "fastshell"
+version = "0.1.0"
+description = "A FastAPI-like framework for building interactive shell applications with auto-completion and type safety"
+authors = [
+    {name = "originalFactor",email = "2438926613@qq.com"}
+]
+license = {text = "GPLv3"}
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "prompt-toolkit (>=3.0.0,<4.0.0)",
+    "rich (>=13.0.0,<15.0.0)",
+    "typing-extensions (>=4.0.0,<5.0.0)"
+]
+license-files = ["LICEN[CS]E*"]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+Homepage = "https://github.com/originalfactor/fastshell"
+Issues = "https://github.com/originalfactor/fastshell/issues"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
