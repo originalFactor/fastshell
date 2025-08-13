@@ -1,13 +1,12 @@
 """Output formatting for FastShell command results."""
 
 import json
-from typing import Any, Dict, List, Optional, Union
-from datetime import datetime, date
+from typing import Any, Optional
+from datetime import datetime
 from enum import Enum
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich.text import Text
 from rich.tree import Tree
 from rich.syntax import Syntax
 from rich.pretty import Pretty

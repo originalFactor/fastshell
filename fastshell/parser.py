@@ -1,7 +1,6 @@
 """Command line parser for FastShell."""
 
 import shlex
-from typing import List, Dict, Optional
 
 from .types import ParsedCommand
 from .exceptions import ParseError

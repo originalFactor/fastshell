@@ -7,9 +7,8 @@ including support for complex types, custom validators, and better error message
 """
 
 import types
-from typing import Any, Type, Dict, Union, get_origin, get_args
-from pydantic import BaseModel, ValidationError, Field, validator
-from pydantic.fields import FieldInfo
+from typing import Any, Type, Union, get_origin, get_args
+from pydantic import BaseModel, ValidationError, Field
 
 from .exceptions import TypeConversionError
 

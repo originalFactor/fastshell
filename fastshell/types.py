@@ -41,19 +41,3 @@ class ParsedCommand:
             self.args = []
         if self.kwargs is None:
             self.kwargs = {}
-
-
-class Argument:
-    """Decorator for marking function parameters as positional arguments."""
-    
-    def __init__(self, description: str = "", **kwargs):
-        self.description = description
-        self.kwargs = kwargs
-
-
-class Option:
-    """Decorator for marking function parameters as named options."""
-    
-    def __init__(self, description: str = "", **kwargs):
-        self.description = description
-        self.kwargs = kwargs

@@ -1,6 +1,6 @@
 """Auto-completion for FastShell."""
 
-from typing import Dict, List, Iterable
+from typing import Dict, Iterable
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.document import Document
 
